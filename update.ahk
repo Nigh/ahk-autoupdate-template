@@ -75,7 +75,9 @@ updateReady(){
         ; MsgBox % "Latest version: " req.responseText
 		RegExMatch(version, "(\d+)\.(\d+)\.(\d+)", verNow)
 		RegExMatch(req.responseText, "(\d+)\.(\d+)\.(\d+)", verNew)
-		if(verNow1*10000+verNow2*100+verNow3<verNew1*10000+verNew2*100+verNew3) {
+		if((verNew1>verNow1)
+		|| (verNew1==verNow1 && ((verNew2>verNow2)
+			|| (verNew2==verNow2 && verNew3>verNow3)))){
 			MsgBox, 0x24, Download, % "Found new version " req.responseText ", download?"
 			IfMsgBox Yes
 			{

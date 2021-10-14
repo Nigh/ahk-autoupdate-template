@@ -28,6 +28,9 @@ Then the script would download the file and check if there is newer version. If 
 ### `icon.ico`
 - put your icon in the same directory.
 
+### notice
+version is compared by `(\d+)\.(\d+)\.(\d+)`
+
 ## Usage
 1. Run `distribution.ahk`, is will compile your script into binary, and then compress it into zip. At the same time, it will genarate the `version.txt`. And then, this two file would be moved into `dist` directory.
 2. Upload the two files in the `dist` directory to your release.
