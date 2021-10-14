@@ -28,9 +28,7 @@ binaryFilename:="app.zip"
 
 update_log:="
 (
-Update Log
-
-null
+text your update log here
 )"
 
 IniRead, lastUpdate, setting.ini, update, last, 0
@@ -62,7 +60,7 @@ update(){
 ; with MSXML2.ServerXMLHTTP method, there would be multiple callback called
 updateReqDone:=0
 updateReady(){
-	global req, version, updateReqDone
+	global req, version, updateReqDone, downloadUrlBase, binaryFilename
 	; log("update req.readyState=" req.readyState, 1)
     if (req.readyState != 4){  ; Not done yet.
         return
@@ -78,10 +76,10 @@ updateReady(){
 		RegExMatch(version, "(\d+)\.(\d+)\.(\d+)", verNow)
 		RegExMatch(req.responseText, "(\d+)\.(\d+)\.(\d+)", verNew)
 		if(verNow1*10000+verNow2*100+verNow3<verNew1*10000+verNew2*100+verNew3) {
-			MsgBox, 0x24, Download, % "Found new version " req.responseText ", download?`n`n发现新版本 " req.responseText " 是否下载?"
+			MsgBox, 0x24, Download, % "Found new version " req.responseText ", download?"
 			IfMsgBox Yes
 			{
-				UrlDownloadToFile, % downloadUrlBase binaryFilename, % "./" binaryFilename
+				UrlDownloadToFile, % downloadUrlBase binaryFilename, % binaryFilename
 				if(ErrorLevel) {
 					MsgBox, 16,, % "Download failed"
 				} else {
