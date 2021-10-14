@@ -6,6 +6,8 @@
 
 `icon.ico` is converted from the `logo.png`  at https://cloudconvert.com/png-to-ico with `48x48` dimension
 
+> tested on Autohotkey 1.1.33.07
+
 ## how it works
 
 When publish release on Github, upload a additional `version.txt` file.
