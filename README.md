@@ -24,10 +24,10 @@ Then the script would download the file and check if there is newer version. If 
 
 ### `distribution.ahk`
 - set `appName` to your script name, it would compile `%appName%.ahk` to `%appName%.exe`
-> The **requirements** of using the `distribution.ahk` is:
-  ; `autohotkey` in PATH
-  ; `ahk2exe` in PATH
-  ; `7z` in PATH
+> The **requirements** of using the `distribution.ahk` is:  
+  ; `autohotkey` in PATH  
+  ; `ahk2exe` in PATH  
+  ; `7z` in PATH  
   ; `mpress` in `ahk2exe` path
 
 ### `icon.ico`
