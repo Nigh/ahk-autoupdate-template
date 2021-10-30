@@ -1,8 +1,13 @@
 ﻿
+#include meta.ahk
+
+IfExist, updater.exe
+{
+	FileDelete, updater.exe
+}
 
 outputVersion(){
 	global
-	version:="0.0.1"
 	if A_Args.Length() > 0
 	{
 		for n, param in A_Args
@@ -18,14 +23,6 @@ outputVersion(){
 	}
 }
 
-
-downloadUrlBase:="https://download.fastgit.org/Nigh/ahk-autoupdate-template/releases/latest/download/"
-; github: https://github.com/Nigh/ahk-autoupdate-template/releases/latest/download/version.txt
-; fast mirror: https://download.fastgit.org/Nigh/ahk-autoupdate-template/releases/latest/download/version.txt
-
-versionFilename:="version.txt"
-binaryFilename:="app.zip"
-
 update_log:="
 (
 text your update log here
@@ -33,11 +30,13 @@ text your update log here
 
 IniRead, lastUpdate, setting.ini, update, last, 0
 IniRead, autoUpdate, setting.ini, update, autoupdate, 1
+IniRead, updateMirror, setting.ini, update, mirror, fastgit
+IniWrite, % updateMirror, setting.ini, update, mirror
 today:=A_MM . A_DD
 if(autoUpdate) {
 	if(lastUpdate!=today) {
-		MsgBox,,Update,Getting Update,2
-		update()
+		; MsgBox,,Update,Getting Update,2
+		get_latest_version()
 	} else {
 		IniRead, version_str, setting.ini, update, ver, "0"
 		if(version_str!=version) {
@@ -46,13 +45,21 @@ if(autoUpdate) {
 		}
 	}
 } else {
-	MsgBox,,Update,Update Skiped`n`nCurrent version`nv%version%,2
+	; MsgBox,,Update,Update Skiped`n`nCurrent version`nv%version%,2
 }
 
-update(){
+; updateSite:=""
+get_latest_version(){
 	global
 	req := ComObjCreate("MSXML2.ServerXMLHTTP")
-	req.open("GET", downloadUrlBase versionFilename, true)
+	if(updateMirror=="fastgit") {
+		updateSite:="https://download.fastgit.org"
+	} else if(updateMirror=="cnpmjs") {
+		updateSite:="https://github.com.cnpmjs.org"
+	} else {
+		updateSite:="https://github.com"
+	}
+	req.open("GET", updateSite downloadUrl versionFilename, true)
 	req.onreadystatechange := Func("updateReady")
 	req.send()
 }
@@ -60,7 +67,7 @@ update(){
 ; with MSXML2.ServerXMLHTTP method, there would be multiple callback called
 updateReqDone:=0
 updateReady(){
-	global req, version, updateReqDone, downloadUrlBase, binaryFilename
+	global req, version, updateReqDone, updateSite, downloadUrl, downloadFilename
 	; log("update req.readyState=" req.readyState, 1)
     if (req.readyState != 4){  ; Not done yet.
         return
@@ -81,17 +88,19 @@ updateReady(){
 			MsgBox, 0x24, Download, % "Found new version " req.responseText ", download?"
 			IfMsgBox Yes
 			{
-				UrlDownloadToFile, % downloadUrlBase binaryFilename, % binaryFilename
-				if(ErrorLevel) {
-					MsgBox, 16,, % "Download failed"
-				} else {
-					MsgBox, ,, % "File saved as " binaryFilename "`n`nProgram will exit now", 2
+				try {
+					UrlDownloadToFile, % updateSite downloadUrl downloadFilename, % "./" downloadFilename
+					MsgBox, ,, % "Download finished`nProgram will restart now", 3
 					IniWrite, % A_MM A_DD, setting.ini, update, last
+					FileInstall, updater.exe, updater.exe, 1
+					Run, updater.exe
 					ExitApp
+				} catch e {
+					MsgBox, 16,, % "Upgrade failed`nAn exception was thrown!`nSpecifically: " e
 				}
 			}
 		} else {
-			MsgBox, ,, % "Current version: v" version "`n`nIt is the latest version", 2
+			; MsgBox, ,, % "Current version: v" version "`n`nIt is the latest version", 2
 			IniWrite, % A_MM A_DD, setting.ini, update, last
 		}
 	} else {

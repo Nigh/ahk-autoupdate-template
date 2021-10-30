@@ -2,6 +2,7 @@
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 #SingleInstance force
+#include meta.ahk
 
 outputVersion()
 
@@ -19,11 +20,13 @@ if(0)
 menu()
 OnExit, trueExit
 
+; ===============================================================
+; ===============================================================
 ; your code below
 
 Gui, -DPIScale -AlwaysOnTop -Owner +OwnDialogs
 Gui, Font, s32 Q5, Verdana
-Gui, Add, Text, w640 Center, ahk-autoupdate-template
+Gui, Add, Text, w640 Center, AHK-AutoUpdate-Template
 Gui, Font, s12 Q5, Verdana
 Gui, Add, Text, w640 Center, v%version%
 Gui, Show
@@ -38,6 +41,8 @@ ExitApp
 F5::ExitApp
 F6::Reload
 #If
+; ===============================================================
+; ===============================================================
 
 UAC()
 {
