@@ -1,19 +1,19 @@
 ﻿
 #include meta.ahk
 
-IfExist, updater.exe
+if FileExist("updater.exe")
 {
-	FileDelete, updater.exe
+	FileDelete("updater.exe")
 }
 
 outputVersion(){
 	global
-	if A_Args.Length() > 0
+	if A_Args.Length > 0
 	{
 		for n, param in A_Args
 		{
-			RegExMatch(param, "--out=(\w+)", outName)
-			if(outName1=="version") {
+			RegExMatch(param, "--out=(\w+)", &outName)
+			if(outName[1]=="version") {
 				f := FileOpen("version.txt","w")
 				f.Write(version)
 				f.Close()
@@ -28,20 +28,19 @@ update_log:="
 text your update log here
 )"
 
-IniRead, lastUpdate, setting.ini, update, last, 0
-IniRead, autoUpdate, setting.ini, update, autoupdate, 1
-IniRead, updateMirror, setting.ini, update, mirror, fastgit
-IniWrite, % updateMirror, setting.ini, update, mirror
+lastUpdate:=IniRead("setting.ini", "update", "last", 0)
+autoUpdate:=IniRead("setting.ini", "update", "autoupdate", 1)
+updateMirror:=IniRead("setting.ini", "update", "mirror", "fastgit")
+IniWrite(updateMirror, "setting.ini", "update", "mirror")
 today:=A_MM . A_DD
 if(autoUpdate) {
 	if(lastUpdate!=today) {
-		; MsgBox,,Update,Getting Update,2
 		get_latest_version()
 	} else {
-		IniRead, version_str, setting.ini, update, ver, "0"
+		version_str:=IniRead("setting.ini", "update", "ver", "0")
 		if(version_str!=version) {
-			IniWrite, % version, setting.ini, update, ver
-			MsgBox, % version "`nUpdate log`n`n" update_log
+			IniWrite(version, "setting.ini", "update", "ver")
+			MsgBox(version . "`nUpdate log`n`n" . update_log)
 		}
 	}
 } else {
@@ -51,7 +50,7 @@ if(autoUpdate) {
 ; updateSite:=""
 get_latest_version(){
 	global
-	req := ComObjCreate("MSXML2.ServerXMLHTTP")
+	req := ComObject("MSXML2.ServerXMLHTTP")
 	if(updateMirror=="fastgit") {
 		updateSite:="https://download.fastgit.org"
 	} else if(updateMirror=="cnpmjs") {
@@ -59,8 +58,8 @@ get_latest_version(){
 	} else {
 		updateSite:="https://github.com"
 	}
-	req.open("GET", updateSite downloadUrl versionFilename, true)
-	req.onreadystatechange := Func("updateReady")
+	req.open("GET", updateSite . downloadUrl . versionFilename, true)
+	req.onreadystatechange := updateReady
 	req.send()
 }
 
@@ -69,7 +68,7 @@ updateReqDone:=0
 updateReady(){
 	global req, version, updateReqDone, updateSite, downloadUrl, downloadFilename
 	; log("update req.readyState=" req.readyState, 1)
-    if (req.readyState != 4){  ; Not done yet.
+    if(req.readyState != 4){  ; Not done yet.
         return
 	}
 	if(updateReqDone){
@@ -78,32 +77,35 @@ updateReady(){
 	}
 	updateReqDone := 1
 	; log("update req.status=" req.status, 1)
-    if (req.status == 200){ ; OK.
+    if(req.status == 200){ ; OK.
         ; MsgBox % "Latest version: " req.responseText
-		RegExMatch(version, "(\d+)\.(\d+)\.(\d+)", verNow)
-		RegExMatch(req.responseText, "(\d+)\.(\d+)\.(\d+)", verNew)
-		if((verNew1>verNow1)
-		|| (verNew1==verNow1 && ((verNew2>verNow2)
-			|| (verNew2==verNow2 && verNew3>verNow3)))){
-			MsgBox, 0x24, Download, % "Found new version " req.responseText ", download?"
-			IfMsgBox Yes
+		RegExMatch(version, "(\d+)\.(\d+)\.(\d+)", &verNow)
+		RegExMatch(req.responseText, "(\d+)\.(\d+)\.(\d+)", &verNew)
+		if((verNew[1]>verNow[1])
+		|| (verNew[1]==verNow[1] && ((verNew[2]>verNow[2])
+			|| (verNew[2]==verNow[2] && verNew[3]>verNow[3])))){
+			result:=MsgBox("Found new version " . req.responseText . ", download?", "Download", 0x2024)
+			if result = "Yes"
 			{
 				try {
-					UrlDownloadToFile, % updateSite downloadUrl downloadFilename, % "./" downloadFilename
-					MsgBox, ,, % "Download finished`nProgram will restart now", 3
-					IniWrite, % A_MM A_DD, setting.ini, update, last
-					FileInstall, updater.exe, updater.exe, 1
-					Run, updater.exe
+					Download(updateSite . downloadUrl . downloadFilename, "./" . downloadFilename)
+					MsgBox("Download finished`nProgram will restart now",, "T3")
+					todayUpdated()
+					FileInstall("updater.exe", "updater.exe", 1)
+					Run("updater.exe")
 					ExitApp
-				} catch e {
-					MsgBox, 16,, % "Upgrade failed`nAn exception was thrown!`nSpecifically: " e
+				} catch as e {
+					MsgBox("Upgrade failed`nAn exception was thrown!`nSpecifically: " . e,,16)
 				}
 			}
 		} else {
-			; MsgBox, ,, % "Current version: v" version "`n`nIt is the latest version", 2
-			IniWrite, % A_MM A_DD, setting.ini, update, last
+			todayUpdated()
 		}
 	} else {
-        MsgBox, 16,, % "Update failed`n`nStatus=" req.status
+        MsgBox("Update failed`n`nStatus=" req.status,,16)
 	}
+}
+
+todayUpdated(){
+	IniWrite(A_MM . A_DD, "setting.ini", "update", "last")
 }

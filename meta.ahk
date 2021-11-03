@@ -1,7 +1,7 @@
 
-FileEncoding, UTF-8
+FileEncoding("UTF-8")
 appName:="auto upgrader"
-version:="0.2.0"
+version:="0.2.2"
 versionFilename:="version.txt"
 ahkFilename:="app.ahk"
 binaryFilename:="app.exe"

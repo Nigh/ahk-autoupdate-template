@@ -1,8 +1,18 @@
 ﻿
-#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
-SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
+SetWorkingDir(A_ScriptDir)
 #SingleInstance force
 #include meta.ahk
+
+;@Ahk2Exe-IgnoreBegin
+_exit(ThisHotkey){
+	ExitApp
+}
+_reload(ThisHotkey){
+	Reload
+}
+Hotkey("F5", _exit)
+Hotkey("F6", _reload)
+;@Ahk2Exe-IgnoreEnd
 
 outputVersion()
 
@@ -17,46 +27,43 @@ if(0)
 	UAC()
 }
 #include update.ahk
-menu()
-OnExit, trueExit
+setTray()
+OnExit(trueExit)
 
 ; ===============================================================
 ; ===============================================================
 ; your code below
 
-Gui, -DPIScale -AlwaysOnTop -Owner +OwnDialogs
-Gui, Font, s32 Q5, Verdana
-Gui, Add, Text, w640 Center, AHK-AutoUpdate-Template
-Gui, Font, s12 Q5, Verdana
-Gui, Add, Text, w640 Center, v%version%
-Gui, Show
+mygui:=Gui("-DPIScale -AlwaysOnTop -Owner +OwnDialogs")
+mygui.SetFont("s32 Q5", "Verdana")
+mygui.Add("Text","w640 Center","AHKv2-AutoUpdate-Template")
+mygui.SetFont("s12 Q5", "Verdana")
+mygui.Add("Text","w640 Center","v" . version)
+mygui.Show()
 Return
 
 GuiClose:
 ExitApp
-trueExit:
-ExitApp
+trueExit(ExitReason, ExitCode){
+	ExitApp
+}
 
-#If debug
-F5::ExitApp
-F6::Reload
-#If
 ; ===============================================================
 ; ===============================================================
 
 UAC()
 {
 	full_command_line := DllCall("GetCommandLine", "str")
-	if not (A_IsAdmin or RegExMatch(full_command_line, " /restart(?!\S)"))
-	{
+
+	if not (A_IsAdmin or RegExMatch(full_command_line, " /restart(?!\S)")) {
 		try
 		{
 			if A_IsCompiled
-				Run *RunAs "%A_ScriptFullPath%" /restart
+				Run '*RunAs "' A_ScriptFullPath '" /restart'
 			else
-				Run *RunAs "%A_AhkPath%" /restart "%A_ScriptFullPath%"
+				Run '*RunAs "' A_AhkPath '" /restart "' A_ScriptFullPath '"'
 		}
 		ExitApp
 	}
 }
-#include menu.ahk
+#include tray.ahk

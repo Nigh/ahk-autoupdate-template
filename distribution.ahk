@@ -1,61 +1,79 @@
 ; # requirements:
-; # autohotkey in PATH
-; # ahk2exe in PATH
+; # ahk2exe.exe in PATH [1.1.34.00_Beta_8]
+; # AutoHotkey64.exe in PATH [v2.0-beta.3]
 ; # mpress in ahk2exe path
 
-#SingleInstance, Force
-SetWorkingDir, %A_ScriptDir%
+#SingleInstance Force
+SetWorkingDir(A_ScriptDir)
 
 #include meta.ahk
 
 if FileExist(binaryFilename)
 {
-	FileDelete, % binaryFilename
+	FileDelete(binaryFilename)
 }
 
 if FileExist(versionFilename)
 {
-	FileDelete, % versionFilename
+	FileDelete(versionFilename)
 }
 
 if InStr(FileExist("dist"), "D")
 {
-	FileRemoveDir, dist, 1
-	If (ErrorLevel)
+	try
 	{
-		MsgBox, % "removing dist`nERROR CODE=" ErrorLevel
+		DirDelete("dist", 1)
+	}
+	catch as e
+	{
+		MsgBox("removing dist`nERROR CODE=" . e.Message)
 		ExitApp
 	}
 }
 
-FileCreateDir, dist
+DirCreate("dist")
 
-RunWait, ahk2exe.exe /in updater.ahk /out updater.exe /compress 1
-If (ErrorLevel)
+try
 {
-	MsgBox, % "updater.ahk`nERROR CODE=" ErrorLevel
+	RunWait("ahk2exe.exe /in updater.ahk /out updater.exe /base `"" A_AhkPath "`" /compress 1")
+}
+catch as e
+{
+	MsgBox("updater.ahk`nERROR CODE=" . e.Message)
 	ExitApp
 }
-RunWait, ahk2exe.exe /in %ahkFilename% /out %binaryFilename% /icon icon.ico /compress 1
-If (ErrorLevel)
+
+try
 {
-	MsgBox, % ahkFilename "`nERROR CODE=" ErrorLevel
+	RunWait("ahk2exe.exe /in " ahkFilename " /out " binaryFilename " /base `"" A_AhkPath "`" /icon icon.ico /compress 1")
+}
+catch as e
+{
+	MsgBox(ahkFilename . "`nERROR CODE=" . e.Message)
 	ExitApp
 }
-RunWait, autohotkey.exe .\%ahkFilename% --out=version
-If (ErrorLevel)
+
+try
 {
-	MsgBox, % "get version`nERROR CODE=" ErrorLevel
+	RunWait("AutoHotkey64.exe .\" . ahkFilename . " --out=version")
+}
+catch as e
+{
+	MsgBox("get version`nERROR CODE=" . e.Message)
 	ExitApp
 }
-RunWait, powershell -command "Compress-Archive -Path .\%binaryFilename% -DestinationPath %downloadFilename%",, Hide
-If (ErrorLevel)
+
+try
 {
-	MsgBox, % "compress`nERROR CODE=" ErrorLevel
+	RunWait("powershell -command `"Compress-Archive -Path .\" binaryFilename " -DestinationPath " downloadFilename '"',, "Hide")
+}
+catch as e
+{
+	MsgBox("compress`nERROR CODE=" . e.Message)
 	ExitApp
 }
-FileDelete, %binaryFilename%
-FileDelete, updater.exe
-FileMove, %downloadFilename%, dist\%downloadFilename%, 1
-FileMove, %versionFilename%, dist\%versionFilename%, 1
-MsgBox, Build Finished
+FileDelete(binaryFilename)
+FileDelete("updater.exe")
+FileMove(downloadFilename, "dist\" downloadFilename, 1)
+FileMove(versionFilename, "dist\" versionFilename, 1)
+MsgBox("Build Finished")
