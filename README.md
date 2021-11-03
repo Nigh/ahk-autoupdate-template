@@ -17,13 +17,14 @@ Then the script would download the file and check if there is newer version. If 
 ## Setup
 
 ### `update.ahk`
-- set `version` in `outputVersion()`
-- set `downloadUrlBase` to your release URL
-- `binaryFilename` should be same as the name in `distribution.ahk`
 - the `update_log` would be shown once through the `msgbox` after success update
 
+### `meta.ahk`
+- set `version`
+- set `ahkFilename` to your script name, it would compile `%ahkFilename%.ahk` to `%binaryFilename%.exe`
+- set `downloadUrl` to your github release URL
+
 ### `distribution.ahk`
-- set `appName` to your script name, it would compile `%appName%.ahk` to `%appName%.exe`
 > The **requirements** of using the `distribution.ahk` is:  
   ; `autohotkey` in PATH  
   ; `ahk2exe` in PATH  
