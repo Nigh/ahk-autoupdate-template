@@ -43,7 +43,5 @@ version is compared by `(\d+)\.(\d+)\.(\d+)`
 
 ## Template Usage
 
-1. Fork this repo.
-2. New Repository.
-3. You can choose `Repository template` now.
+Click [Use this template](https://github.com/Nigh/ahk-autoupdate-template/generate)
 
