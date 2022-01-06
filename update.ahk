@@ -1,4 +1,4 @@
-
+﻿
 #include meta.ahk
 
 if FileExist("updater.exe")
@@ -8,8 +8,15 @@ if FileExist("updater.exe")
 
 lastUpdate:=IniRead("setting.ini", "update", "last", 0)
 autoUpdate:=IniRead("setting.ini", "update", "autoupdate", 1)
-updateMirror:=IniRead("setting.ini", "update", "mirror", "fastgit")
+updateMirror:=IniRead("setting.ini", "update", "mirror", 1)
 IniWrite(updateMirror, "setting.ini", "update", "mirror")
+mirrorList:=[
+	"https://github.com",
+	"https://ghproxy.com/https://github.com",
+	"https://download.fastgit.org",
+	"https://github.com.cnpmjs.org",
+]
+updatemirrorTried:=Array()
 today:=A_MM . A_DD
 if(autoUpdate) {
 	if(lastUpdate!=today) {
@@ -22,29 +29,28 @@ if(autoUpdate) {
 		}
 	}
 } else {
-	; MsgBox,,Update,Update Skiped`n`nCurrent version`nv%version%,2
+	TrayTip "Update Skiped`n`nCurrent version`nv" version,"Update", 1
 }
 
-; updateSite:=""
 get_latest_version(){
 	global
 	req := ComObject("MSXML2.ServerXMLHTTP")
-	if(updateMirror=="fastgit") {
-		updateSite:="https://download.fastgit.org"
-	} else if(updateMirror=="cnpmjs") {
-		updateSite:="https://github.com.cnpmjs.org"
-	} else {
-		updateSite:="https://github.com"
+	updateMirror:=updateMirror+0
+	if(updateMirror > mirrorList.Length or updateMirror <= 0) {
+		updateMirror := 1
 	}
-	req.open("GET", updateSite . downloadUrl . versionFilename, true)
+	updateSite:=mirrorList[updateMirror]
+	; MsgBox("GET:" . mirrorList[updateMirror] . downloadUrl . versionFilename)
+	updateReqDone:=0
+	req.open("GET", mirrorList[updateMirror] . downloadUrl . versionFilename, true)
 	req.onreadystatechange := updateReady
 	req.send()
 }
 
 ; with MSXML2.ServerXMLHTTP method, there would be multiple callback called
-updateReqDone:=0
+
 updateReady(){
-	global req, version, updateReqDone, updateSite, downloadUrl, downloadFilename
+	global req, version, updateReqDone, downloadUrl, downloadFilename, mirrorList, updateMirror, updatemirrorTried
 	; log("update req.readyState=" req.readyState, 1)
     if(req.readyState != 4){  ; Not done yet.
         return
@@ -55,10 +61,10 @@ updateReady(){
 	}
 	updateReqDone := 1
 	; log("update req.status=" req.status, 1)
-    if(req.status == 200){ ; OK.
+    if(req.status == 200 and StrLen(req.responseText)<=64){ ; OK.
         ; MsgBox % "Latest version: " req.responseText
 		RegExMatch(version, "(\d+)\.(\d+)\.(\d+)", &verNow)
-		RegExMatch(req.responseText, "(\d+)\.(\d+)\.(\d+)", &verNew)
+		RegExMatch(req.responseText, "^(\d+)\.(\d+)\.(\d+)$", &verNew)
 		if((verNew[1]>verNow[1])
 		|| (verNew[1]==verNow[1] && ((verNew[2]>verNow[2])
 			|| (verNew[2]==verNow[2] && verNew[3]>verNow[3])))){
@@ -66,21 +72,39 @@ updateReady(){
 			if result = "Yes"
 			{
 				try {
-					Download(updateSite . downloadUrl . downloadFilename, "./" . downloadFilename)
+					Download(mirrorList[updateMirror] . downloadUrl . downloadFilename, "./" . downloadFilename)
 					MsgBox("Download finished`nProgram will restart now",, "T3")
 					todayUpdated()
 					FileInstall("updater.exe", "updater.exe", 1)
 					Run("updater.exe")
 					ExitApp
 				} catch as e {
-					MsgBox("Upgrade failed`nAn exception was thrown!`nSpecifically: " . e,,16)
+					TrayTip "An exception was thrown!`nSpecifically: " . e.Message, "upgrade failed", 0x3
 				}
 			}
 		} else {
 			todayUpdated()
 		}
 	} else {
-        MsgBox("Update failed`n`nStatus=" req.status,,16)
+		updatemirrorTried.Push(updateMirror)
+		For k, v in mirrorList
+		{
+			local tested
+			tested:=False
+			for , p in updatemirrorTried
+			{
+				if(p=k) {
+					tested:=True
+					break
+				}
+			}
+			if not tested {
+				updateMirror:=k
+				get_latest_version()
+				Return
+			}
+		}
+		TrayTip "Status=" req.status, "update failed", 0x3
 	}
 }
 
