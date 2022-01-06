@@ -8,6 +8,11 @@
 
 > tested on Autohotkey 1.1.33.07
 
+## !!!NOTICE!!!
+
+Please note that `v1` is no longer in development, please move to [v2](https://github.com/Nigh/ahk-autoupdate-template)
+
+
 ## how it works
 
 When publish release on Github, upload a additional `version.txt` file.
