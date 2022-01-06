@@ -1,32 +1,10 @@
-﻿
+
 #include meta.ahk
 
 if FileExist("updater.exe")
 {
 	FileDelete("updater.exe")
 }
-
-outputVersion(){
-	global
-	if A_Args.Length > 0
-	{
-		for n, param in A_Args
-		{
-			RegExMatch(param, "--out=(\w+)", &outName)
-			if(outName[1]=="version") {
-				f := FileOpen(versionFilename,"w","UTF-8-RAW")
-				f.Write(version)
-				f.Close()
-				ExitApp
-			}
-		}
-	}
-}
-
-update_log:="
-(
-text your update log here
-)"
 
 lastUpdate:=IniRead("setting.ini", "update", "last", 0)
 autoUpdate:=IniRead("setting.ini", "update", "autoupdate", 1)

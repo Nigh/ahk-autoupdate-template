@@ -2,24 +2,12 @@
 SetWorkingDir(A_ScriptDir)
 #SingleInstance force
 #include meta.ahk
+;@Ahk2Exe-SetName %appName%
+;@Ahk2Exe-SetVersion %version%
+;@Ahk2Exe-SetMainIcon icon.ico
+;@Ahk2Exe-ExeName %appName%
 
-;@Ahk2Exe-IgnoreBegin
-_exit(ThisHotkey){
-	ExitApp
-}
-_reload(ThisHotkey){
-	Reload
-}
-Hotkey("F5", _exit)
-Hotkey("F6", _reload)
-;@Ahk2Exe-IgnoreEnd
-
-outputVersion()
-
-if A_IsCompiled
-debug:=0
-Else
-debug:=1
+#include prod.ahk
 
 ; if you need admin privilege, enable it.
 if(0)
