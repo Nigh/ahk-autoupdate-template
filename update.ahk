@@ -35,7 +35,7 @@ if(autoUpdate) {
 get_latest_version(){
 	global
 	req := ComObject("MSXML2.ServerXMLHTTP")
-	updateMirror:=updateMirror+0
+	updateMirror:=IsNumber(updateMirror)?updateMirror+0:0
 	if(updateMirror > mirrorList.Length or updateMirror <= 0) {
 		updateMirror := 1
 	}
