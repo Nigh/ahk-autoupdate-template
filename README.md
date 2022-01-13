@@ -26,9 +26,11 @@ Then the script would download the file and check if there is newer version. If 
 
 ### `distribution.ahk`
 > The **requirements** of using the `distribution.ahk` is:  
-  ; # ahk2exe.exe in PATH [1.1.34.00_Beta_8]  
-  ; # AutoHotkey64.exe in PATH [v2.0-beta.3]  
-  ; # mpress in ahk2exe path
+  ~~; # ahk2exe.exe in PATH [1.1.34.00_Beta_8]~~  
+  ~~; # AutoHotkey64.exe in PATH [v2.0-beta.3]~~  
+  ~~; # mpress in ahk2exe path~~  
+
+Since these binaries have been added to the project, there is no longer any need to reference external binaries.
 
 ### `icon.ico`
 - put your icon in the same directory.
