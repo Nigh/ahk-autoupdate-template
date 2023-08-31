@@ -1,4 +1,4 @@
-﻿
+﻿#Requires AutoHotkey v2.0
 SetWorkingDir(A_ScriptDir)
 #SingleInstance force
 #include meta.ahk
