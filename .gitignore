@@ -17,3 +17,4 @@ $RECYCLE.BIN/
 dist/
 
 *.ini
+compile_prop.ahk
