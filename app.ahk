@@ -23,6 +23,7 @@ OnExit(trueExit)
 ; your code below
 
 mygui:=Gui("-DPIScale -AlwaysOnTop -Owner +OwnDialogs")
+myGui.OnEvent("Close", myGui_Close)
 mygui.SetFont("s32 Q5", "Verdana")
 mygui.Add("Text","w640 Center","AHKv2-AutoUpdate-Template")
 mygui.SetFont("s12 Q5", "Verdana")
@@ -30,8 +31,9 @@ mygui.Add("Text","w640 Center","v" . version)
 mygui.Show()
 Return
 
-GuiClose:
-ExitApp
+mygui_Close(thisGui) {
+	trueExit(0, 0)
+}
 trueExit(ExitReason, ExitCode){
 	ExitApp
 }

@@ -30,7 +30,7 @@ DirCreate("dist")
 
 try
 {
-	RunWait("./binary/ahk2exe.exe /in updater.ahk /out updater.exe /base `"" A_AhkPath "`" /compress 1")
+	RunWait("./ahk-compile-toolset/ahk2exe.exe /in updater.ahk /out updater.exe /base `"" A_AhkPath "`" /compress 1")
 }
 catch as e
 {
@@ -40,7 +40,7 @@ catch as e
 
 try
 {
-	RunWait("./binary/ahk2exe.exe /in " ahkFilename " /out " binaryFilename " /base `"" A_AhkPath "`" /compress 1")
+	RunWait("./ahk-compile-toolset/ahk2exe.exe /in " ahkFilename " /out " binaryFilename " /base `"" A_AhkPath "`" /compress 1")
 }
 catch as e
 {
@@ -50,7 +50,7 @@ catch as e
 
 try
 {
-	RunWait("./binary/AutoHotkey64.exe .\" . ahkFilename . " --out=version")
+	RunWait("./ahk-compile-toolset/AutoHotkey64.exe .\" . ahkFilename . " --out=version")
 }
 catch as e
 {
