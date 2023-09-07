@@ -13,8 +13,6 @@ IniWrite(updateMirror, "setting.ini", "update", "mirror")
 mirrorList:=[
 	"https://github.com",
 	"https://ghproxy.com/https://github.com",
-	"https://download.fastgit.org",
-	"https://github.com.cnpmjs.org",
 ]
 updatemirrorTried:=Array()
 today:=A_MM . A_DD
