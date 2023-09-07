@@ -2,10 +2,7 @@
 SetWorkingDir(A_ScriptDir)
 #SingleInstance force
 #include meta.ahk
-;@Ahk2Exe-SetName %appName%
-;@Ahk2Exe-SetVersion %version%
-;@Ahk2Exe-SetMainIcon icon.ico
-;@Ahk2Exe-ExeName %appName%
+#include *i compile_prop.ahk
 
 #include prod.ahk
 
