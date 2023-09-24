@@ -7,7 +7,7 @@ SetWorkingDir(A_ScriptDir)
 #include prod.ahk
 
 ; if you need admin privilege, enable it.
-if(0)
+if (0)
 {
 	UAC()
 }
@@ -19,19 +19,19 @@ OnExit(trueExit)
 ; ===============================================================
 ; your code below
 
-mygui:=Gui("-DPIScale -AlwaysOnTop -Owner +OwnDialogs")
+mygui := Gui("-DPIScale -AlwaysOnTop -Owner +OwnDialogs")
 myGui.OnEvent("Close", myGui_Close)
 mygui.SetFont("s32 Q5", "Verdana")
-mygui.Add("Text","w640 Center","AHKv2-AutoUpdate-Template")
+mygui.Add("Text", "w640 Center", "AHKv2-AutoUpdate-Template")
 mygui.SetFont("s12 Q5", "Verdana")
-mygui.Add("Text","w640 Center","v" . version)
+mygui.Add("Text", "w640 Center", "v" . version)
 mygui.Show()
 Return
 
 mygui_Close(thisGui) {
 	trueExit(0, 0)
 }
-trueExit(ExitReason, ExitCode){
+trueExit(ExitReason, ExitCode) {
 	ExitApp
 }
 
