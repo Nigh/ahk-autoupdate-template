@@ -1,8 +1,6 @@
-﻿
-
-gotoWebpage_maker(page)
+﻿gotoWebpage_maker(page)
 {
-	webpage(*){
+	webpage(*) {
 		Run(page)
 	}
 	return webpage
@@ -11,12 +9,12 @@ gotoWebpage_maker(page)
 setTray()
 {
 	global version, trueExit
-	trayExit(*){
-		trueExit("","")
+	trayExit(*) {
+		trueExit("", "")
 	}
 	tray := A_TrayMenu
 	tray.delete
-	tray.add("v" . version, (*)=>{})
+	tray.add("v" . version, (*) => {})
 	tray.add()
 	tray.add("Github 页面", gotoWebpage_maker("https://github.com/Nigh/ahk-autoupdate-template"))
 	tray.add("Donate 捐助", gotoWebpage_maker("https://ko-fi.com/xianii"))
