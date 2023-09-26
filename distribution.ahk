@@ -45,11 +45,11 @@ DirCreate("dist")
 
 try
 {
-	RunWait("./ahk-compile-toolset/ahk2exe.exe /in updater.ahk /out updater.exe /base `"" A_AhkPath "`" /compress 1")
+	RunWait("./ahk-compile-toolset/tcc/tcc.exe ./updater.c -luser32")
 }
 catch as e
 {
-	MsgBox("updater.ahk`nERROR CODE=" . e.Message)
+	MsgBox("updater compile`nERROR CODE=" . e.Message)
 	ExitApp
 }
 
