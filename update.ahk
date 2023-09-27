@@ -1,7 +1,14 @@
 ﻿#include meta.ahk
 
 if FileExist("updater.exe") {
-	FileDelete("updater.exe")
+	try {
+		FileDelete("updater.exe")
+	}
+}
+if FileExist("___delete_me___.exe") {
+	try {
+		FileDelete("___delete_me___.exe")
+	}
 }
 if !FileExist("setting.ini") {
 	IniWrite(version, "setting.ini", "update", "ver")
@@ -108,7 +115,7 @@ updateReady() {
 							MsgBox("Download finished`nProgram will restart now", , "T3")
 							todayUpdated()
 							FileInstall("updater.exe", "updater.exe", 1)
-							Run("updater.exe")
+							Run("updater.exe ___ORIGIN_ME___ " downloadFilename " " binaryFilename, A_ScriptDir, "Hide")
 							ExitApp
 						} catch as e {
 							TrayTip "An exception was thrown!`nSpecifically: " . e.Message, "upgrade failed", 0x3

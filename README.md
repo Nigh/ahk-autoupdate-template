@@ -24,7 +24,8 @@ Then the script would download the file and check if there is newer version. If 
 
 - set `version`
 - set `ahkFilename` to your script name, it would compile `%ahkFilename%.ahk` to `%binaryFilename%.exe`
-- set `downloadUrl` to your github release URL
+- ~~set `downloadUrl` to your github release URL~~
+- set your GitHub id(`GitHubID`) and Repo name (`repoName`)
 
 ### `tray.ahk`
 
