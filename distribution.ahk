@@ -45,7 +45,7 @@ DirCreate("dist")
 
 try
 {
-	RunWait("./ahk-compile-toolset/tcc/tcc.exe ./updater.c -luser32")
+	RunWait("./ahk-compile-toolset/tcc/tcc.exe ./ahk-compile-toolset/updater.c -DdownloadFilename='`"" downloadFilename "`"' -DbinaryFilename='`"" binaryFilename "`"'")
 }
 catch as e
 {
