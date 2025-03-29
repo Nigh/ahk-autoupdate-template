@@ -45,7 +45,7 @@ DirCreate("dist")
 
 try
 {
-	RunWait("./ahk-compile-toolset/tcc/tcc.exe ./updater.c -luser32")
+	RunWait("./ahk-compile-toolset/tcc/tcc.exe ./ahk-compile-toolset/updater.c -DdownloadFilename='`"" downloadFilename "`"' -DbinaryFilename='`"" binaryFilename "`"'")
 }
 catch as e
 {
@@ -84,6 +84,7 @@ catch as e
 }
 FileDelete(binaryFilename)
 FileDelete("updater.exe")
+Sleep(500)
 FileMove(downloadFilename, "dist\" downloadFilename, 1)
 FileMove(versionFilename, "dist\" versionFilename, 1)
 MsgBox("Build Finished")
