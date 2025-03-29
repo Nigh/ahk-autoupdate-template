@@ -84,6 +84,7 @@ catch as e
 }
 FileDelete(binaryFilename)
 FileDelete("updater.exe")
+Sleep(500)
 FileMove(downloadFilename, "dist\" downloadFilename, 1)
 FileMove(versionFilename, "dist\" versionFilename, 1)
 MsgBox("Build Finished")
