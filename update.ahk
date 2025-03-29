@@ -19,7 +19,7 @@ updateMirror := IniRead("setting.ini", "update", "mirror", 1)
 IniWrite(updateMirror, "setting.ini", "update", "mirror")
 mirrorList := [
 	"https://github.com",
-	"https://mirror.ghproxy.com/https://github.com",
+	"https://ghfast.top/https://github.com",
 ]
 updatemirrorTried := Array()
 today := A_MM . A_DD
