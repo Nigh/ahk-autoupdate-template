@@ -1,6 +1,6 @@
 FileEncoding("UTF-8")
 appName := "auto upgrader"
-version := "0.4.0"
+version := "0.5.0"
 versionFilename := "version.txt"
 ahkFilename := "app.ahk"
 binaryFilename := "app.exe"
@@ -10,5 +10,6 @@ repoName := "ahk-autoupdate-template"
 downloadUrl := "/" GitHubID "/" repoName "/releases/latest/download/"
 update_log := "
 (
-Rewrite updater.ahk with C, that will reduce the compiled binary by half.
+Optimized updater.c
+Add more buttons for test
 )"
